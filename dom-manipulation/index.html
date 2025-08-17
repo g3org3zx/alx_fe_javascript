@@ -19,7 +19,7 @@
             border-radius: 5px;
             min-height: 50px;
         }
-        input, button {
+        input, button, select {
             margin: 5px;
             padding: 8px;
             font-size: 16px;
@@ -38,10 +38,18 @@
             display: block;
             margin: 10px auto;
         }
+        #categoryFilter {
+            width: 200px;
+        }
     </style>
 </head>
 <body>
     <h1>Dynamic Quote Generator</h1>
+    <div>
+        <select id="categoryFilter" onchange="filterQuotes()">
+            <option value="all">All Categories</option>
+        </select>
+    </div>
     <div id="quoteDisplay">Click "Show New Quote" to display a quote!</div>
     <button id="newQuote">Show New Quote</button>
     <div>
