@@ -9,35 +9,17 @@ let quotes = [
 // Function to display a random quote
 function showRandomQuote() {
     const quoteDisplay = document.getElementById('quoteDisplay');
-    // Clear previous content
-    while (quoteDisplay.firstChild) {
-        quoteDisplay.removeChild(quoteDisplay.firstChild);
-    }
-
+    
     if (quotes.length === 0) {
-        const message = document.createElement('p');
-        message.textContent = "No quotes available!";
-        quoteDisplay.appendChild(message);
+        quoteDisplay.innerHTML = "No quotes available!";
         return;
     }
 
     const randomIndex = Math.floor(Math.random() * quotes.length);
     const randomQuote = quotes[randomIndex];
-
-    // Create elements for quote and category
-    const quoteText = document.createElement('p');
-    const quoteStrong = document.createElement('strong');
-    quoteStrong.textContent = randomQuote.text;
-    quoteText.appendChild(quoteStrong);
-
-    const categoryText = document.createElement('em');
-    categoryText.textContent = `Category: ${randomQuote.category}`;
-    const br = document.createElement('br');
-
-    // Append elements to quoteDisplay
-    quoteText.appendChild(br);
-    quoteText.appendChild(categoryText);
-    quoteDisplay.appendChild(quoteText);
+    
+    // Use innerHTML to display the quote
+    quoteDisplay.innerHTML = `<p><strong>${randomQuote.text}</strong><br><em>Category: ${randomQuote.category}</em></p>`;
 }
 
 // Function to create and append the form for adding quotes (already in HTML)
