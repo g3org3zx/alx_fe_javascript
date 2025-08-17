@@ -41,6 +41,10 @@
         #categoryFilter {
             width: 200px;
         }
+        #notification {
+            margin: 10px 0;
+            color: red;
+        }
     </style>
 </head>
 <body>
@@ -61,6 +65,12 @@
         <button onclick="exportToJsonFile()">Export Quotes</button>
         <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
     </div>
+    <div>
+        <button id="syncButton">Sync with Server</button>
+        <button id="simulateLocalButton">Simulate Local Change</button>
+        <input type="checkbox" id="manualResolve"> Enable Manual Conflict Resolution
+    </div>
+    <div id="notification"></div>
     <script src="script.js"></script>
 </body>
 </html>
