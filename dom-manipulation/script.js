@@ -113,6 +113,9 @@ async function syncQuotes() {
     saveQuotes();
     populateCategories();
     filterQuotes();
+
+    // Notify successful sync
+    notify('Quotes synced with server!');
 }
 
 // Function to start periodic sync
