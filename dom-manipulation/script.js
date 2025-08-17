@@ -1,28 +1,59 @@
-// 🎯 Function to create the "Add Quote" form dynamically
-function createAddQuoteForm() {
-  // 1. Find where we want to put the form (e.g., inside a div with id="formContainer")
-  const container = document.getElementById("formContainer");
+// Initial array of quotes
+let quotes = [
+    { text: "The only way to do great work is to love what you do.", category: "Motivation" },
+    { text: "Life is what happens when you're busy making other plans.", category: "Life" },
+    { text: "Stay hungry, stay foolish.", category: "Motivation" },
+    { text: "You must be the change you wish to see in the world.", category: "Inspiration" }
+];
 
-  // 2. Create a text input for the quote
-  const quoteInput = document.createElement("input");
-  quoteInput.id = "newQuoteText";
-  quoteInput.placeholder = "Enter a new quote";
-
-  // 3. Create a text input for the category
-  const categoryInput = document.createElement("input");
-  categoryInput.id = "newQuoteCategory";
-  categoryInput.placeholder = "Enter category";
-
-  // 4. Create a button to submit the new quote
-  const addButton = document.createElement("button");
-  addButton.textContent = "Add Quote";
-  addButton.addEventListener("click", addQuote); // when clicked, run addQuote()
-
-  // 5. Add everything to the container
-  container.appendChild(quoteInput);
-  container.appendChild(categoryInput);
-  container.appendChild(addButton);
+// Function to display a random quote
+function showRandomQuote() {
+    const quoteDisplay = document.getElementById('quoteDisplay');
+    if (quotes.length === 0) {
+        quoteDisplay.innerHTML = "No quotes available!";
+        return;
+    }
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    const randomQuote = quotes[randomIndex];
+    quoteDisplay.innerHTML = `<p><strong>${randomQuote.text}</strong><br><em>Category: ${randomQuote.category}</em></p>`;
 }
 
-// 🎯 Call this function when the page loads
+// Function to create and append the form for adding quotes (already in HTML, but this ensures dynamic behavior)
+function createAddQuoteForm() {
+    // Form is already in HTML, so we just attach event listeners if needed
+    const addButton = document.querySelector('button[onclick="addQuote()"]');
+    addButton.addEventListener('click', addQuote);
+}
+
+// Function to add a new quote
+function addQuote() {
+    const quoteTextInput = document.getElementById('newQuoteText');
+    const quoteCategoryInput = document.getElementById('newQuoteCategory');
+    const quoteDisplay = document.getElementById('quoteDisplay');
+
+    const text = quoteTextInput.value.trim();
+    const category = quoteCategoryInput.value.trim();
+
+    // Validate inputs
+    if (!text || !category) {
+        quoteDisplay.innerHTML = "Please enter both a quote and a category!";
+        return;
+    }
+
+    // Add new quote to the array
+    const newQuote = { text, category };
+    quotes.push(newQuote);
+
+    // Clear input fields
+    quoteTextInput.value = '';
+    quoteCategoryInput.value = '';
+
+    // Display confirmation
+    quoteDisplay.innerHTML = `Quote added successfully!<br><strong>${text}</strong><br><em>Category: ${category}</em>`;
+}
+
+// Event listener for the "Show New Quote" button
+document.getElementById('newQuote').addEventListener('click', showRandomQuote);
+
+// Initialize the form functionality
 createAddQuoteForm();
