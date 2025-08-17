@@ -9,18 +9,40 @@ let quotes = [
 // Function to display a random quote
 function showRandomQuote() {
     const quoteDisplay = document.getElementById('quoteDisplay');
+    // Clear previous content
+    while (quoteDisplay.firstChild) {
+        quoteDisplay.removeChild(quoteDisplay.firstChild);
+    }
+
     if (quotes.length === 0) {
-        quoteDisplay.innerHTML = "No quotes available!";
+        const message = document.createElement('p');
+        message.textContent = "No quotes available!";
+        quoteDisplay.appendChild(message);
         return;
     }
+
     const randomIndex = Math.floor(Math.random() * quotes.length);
     const randomQuote = quotes[randomIndex];
-    quoteDisplay.innerHTML = `<p><strong>${randomQuote.text}</strong><br><em>Category: ${randomQuote.category}</em></p>`;
+
+    // Create elements for quote and category
+    const quoteText = document.createElement('p');
+    const quoteStrong = document.createElement('strong');
+    quoteStrong.textContent = randomQuote.text;
+    quoteText.appendChild(quoteStrong);
+
+    const categoryText = document.createElement('em');
+    categoryText.textContent = `Category: ${randomQuote.category}`;
+    const br = document.createElement('br');
+
+    // Append elements to quoteDisplay
+    quoteText.appendChild(br);
+    quoteText.appendChild(categoryText);
+    quoteDisplay.appendChild(quoteText);
 }
 
-// Function to create and append the form for adding quotes (already in HTML, but this ensures dynamic behavior)
+// Function to create and append the form for adding quotes (already in HTML)
 function createAddQuoteForm() {
-    // Form is already in HTML, so we just attach event listeners if needed
+    // Form is in HTML, so we just ensure the addQuote function is bound
     const addButton = document.querySelector('button[onclick="addQuote()"]');
     addButton.addEventListener('click', addQuote);
 }
@@ -36,7 +58,13 @@ function addQuote() {
 
     // Validate inputs
     if (!text || !category) {
-        quoteDisplay.innerHTML = "Please enter both a quote and a category!";
+        // Clear previous content
+        while (quoteDisplay.firstChild) {
+            quoteDisplay.removeChild(quoteDisplay.firstChild);
+        }
+        const errorMessage = document.createElement('p');
+        errorMessage.textContent = "Please enter both a quote and a category!";
+        quoteDisplay.appendChild(errorMessage);
         return;
     }
 
@@ -48,8 +76,29 @@ function addQuote() {
     quoteTextInput.value = '';
     quoteCategoryInput.value = '';
 
-    // Display confirmation
-    quoteDisplay.innerHTML = `Quote added successfully!<br><strong>${text}</strong><br><em>Category: ${category}</em>`;
+    // Clear previous content
+    while (quoteDisplay.firstChild) {
+        quoteDisplay.removeChild(quoteDisplay.firstChild);
+    }
+
+    // Display confirmation using createElement and appendChild
+    const confirmationMessage = document.createElement('p');
+    confirmationMessage.textContent = "Quote added successfully!";
+
+    const quoteText = document.createElement('p');
+    const quoteStrong = document.createElement('strong');
+    quoteStrong.textContent = text;
+    quoteText.appendChild(quoteStrong);
+
+    const categoryText = document.createElement('em');
+    categoryText.textContent = `Category: ${category}`;
+    const br = document.createElement('br');
+
+    // Append elements to quoteDisplay
+    quoteText.appendChild(br);
+    quoteText.appendChild(categoryText);
+    quoteDisplay.appendChild(confirmationMessage);
+    quoteDisplay.appendChild(quoteText);
 }
 
 // Event listener for the "Show New Quote" button
