@@ -1,145 +1,37 @@
-// Initialize quotes array from localStorage or use default quotes
-let quotes = JSON.parse(localStorage.getItem('quotes')) || [
-    { text: "The only way to do great work is to love what you do.", category: "Motivation" },
-    { text: "Life is what happens when you're busy making other plans.", category: "Life" },
-    { text: "Stay hungry, stay foolish.", category: "Motivation" },
-    { text: "You must be the change you wish to see in the world.", category: "Inspiration" }
-];
+2. Creating a Dynamic Content Filtering System Using Web Storage and JSON
+mandatory
+Objective: Enhance the “Dynamic Quote Generator” by implementing a dynamic content filtering system that allows users to filter quotes by categories stored in web storage. This task focuses on integrating interactive filtering capabilities that utilize web storage to enhance user experience.
 
-// Function to save quotes to localStorage
-function saveQuotes() {
-    localStorage.setItem('quotes', JSON.stringify(quotes));
-}
+Task Description:
+Expand the functionality of the “Dynamic Quote Generator” to include a filtering system based on categories. Users will be able to select a category and see only the quotes that match this category. This involves manipulating the DOM to dynamically update the displayed content and using web storage to remember the user’s last selected filter across sessions.
 
-// Function to display a random quote
-function showRandomQuote() {
-    const quoteDisplay = document.getElementById('quoteDisplay');
-    
-    if (quotes.length === 0) {
-        quoteDisplay.innerHTML = "No quotes available!";
-        return;
-    }
+Step 1: Update the HTML Structure
+Add Category Filter:
+Introduce a dropdown menu or a set of buttons that allow the user to select a category for filtering quotes.
+  <select id="categoryFilter" onchange="filterQuotes()">
+    <option value="all">All Categories</option>
+    <!-- Dynamically populated categories -->
+  </select>
+Step 2: Implement Filtering Logic in JavaScript
+Populate Categories Dynamically:
 
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    const randomQuote = quotes[randomIndex];
-    
-    // Use innerHTML to display the quote
-    quoteDisplay.innerHTML = `<p><strong>${randomQuote.text}</strong><br><em>Category: ${randomQuote.category}</em></p>`;
-    
-    // Save the last viewed quote to sessionStorage
-    sessionStorage.setItem('lastQuote', JSON.stringify(randomQuote));
-}
+Use the existing quotes array to extract unique categories and populate the dropdown menu.
+Name the function behind this implementation populateCategories.
+Filter Quotes Based on Selected Category:
 
-// Function to create and append the form for adding quotes (already in HTML)
-function createAddQuoteForm() {
-    // Form is in HTML, so we just ensure the addQuote function is bound
-    const addButton = document.querySelector('button[onclick="addQuote()"]');
-    addButton.addEventListener('click', addQuote);
-}
+Implement the filterQuotes function to update the displayed quotes based on the selected category.
+Remember the Last Selected Filter:
 
-// Function to add a new quote
-function addQuote() {
-    const quoteTextInput = document.getElementById('newQuoteText');
-    const quoteCategoryInput = document.getElementById('newQuoteCategory');
-    const quoteDisplay = document.getElementById('quoteDisplay');
+Use local storage to save the last selected category filter and restore it when the user revisits the page.
+Step 3: Update Web Storage with Category Data
+Enhance Storage Functionality:
+Update the addQuote function to also update the categories in the dropdown if a new category is introduced.
+Ensure that changes in categories and filters are reflected in real-time and persisted across sessions.
+Step 4: Testing and Deployment
+Ensure Comprehensive Testing:
+Test the application to ensure the filtering system works correctly across different browsers and sessions.
+Verify that category changes and filter preferences are preserved as expected using web storage.
+Repo:
 
-    const text = quoteTextInput.value.trim();
-    const category = quoteCategoryInput.value.trim();
-
-    // Validate inputs
-    if (!text || !category) {
-        // Clear previous content
-        while (quoteDisplay.firstChild) {
-            quoteDisplay.removeChild(quoteDisplay.firstChild);
-        }
-        const errorMessage = document.createElement('p');
-        errorMessage.textContent = "Please enter both a quote and a category!";
-        quoteDisplay.appendChild(errorMessage);
-        return;
-    }
-
-    // Add new quote to the array
-    const newQuote = { text, category };
-    quotes.push(newQuote);
-
-    // Save to localStorage
-    saveQuotes();
-
-    // Clear input fields
-    quoteTextInput.value = '';
-    quoteCategoryInput.value = '';
-
-    // Clear previous content
-    while (quoteDisplay.firstChild) {
-        quoteDisplay.removeChild(quoteDisplay.firstChild);
-    }
-
-    // Display confirmation using createElement and appendChild
-    const confirmationMessage = document.createElement('p');
-    confirmationMessage.textContent = "Quote added successfully!";
-
-    const quoteText = document.createElement('p');
-    const quoteStrong = document.createElement('strong');
-    quoteStrong.textContent = text;
-    quoteText.appendChild(quoteStrong);
-
-    const categoryText = document.createElement('em');
-    categoryText.textContent = `Category: ${category}`;
-    const br = document.createElement('br');
-
-    // Append elements to quoteDisplay
-    quoteText.appendChild(br);
-    quoteText.appendChild(categoryText);
-    quoteDisplay.appendChild(confirmationMessage);
-    quoteDisplay.appendChild(quoteText);
-}
-
-// Function to export quotes to a JSON file
-function exportToJsonFile() {
-    const jsonStr = JSON.stringify(quotes, null, 2);
-    const blob = new Blob([jsonStr], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'quotes.json';
-    a.click();
-    URL.revokeObjectURL(url);
-}
-
-// Function to import quotes from a JSON file
-function importFromJsonFile(event) {
-    const fileReader = new FileReader();
-    fileReader.onload = function(event) {
-        try {
-            const importedQuotes = JSON.parse(event.target.result);
-            // Validate imported quotes (array of objects with text and category)
-            if (!Array.isArray(importedQuotes) || importedQuotes.some(q => !q.text || !q.category)) {
-                alert('Invalid JSON format! Must be an array of objects with "text" and "category" properties.');
-                return;
-            }
-            quotes.push(...importedQuotes);
-            saveQuotes();
-            alert('Quotes imported successfully!');
-            // Display the last imported quote
-            if (importedQuotes.length > 0) {
-                const lastQuote = importedQuotes[importedQuotes.length - 1];
-                document.getElementById('quoteDisplay').innerHTML = `<p><strong>${lastQuote.text}</strong><br><em>Category: ${lastQuote.category}</em></p>`;
-            }
-        } catch (e) {
-            alert('Error parsing JSON file!');
-        }
-    };
-    fileReader.readAsText(event.target.files[0]);
-}
-
-// Event listener for the "Show New Quote" button
-document.getElementById('newQuote').addEventListener('click', showRandomQuote);
-
-// Initialize the form functionality
-createAddQuoteForm();
-
-// Display the last viewed quote from sessionStorage on page load, if available
-const lastQuote = JSON.parse(sessionStorage.getItem('lastQuote'));
-if (lastQuote) {
-    document.getElementById('quoteDisplay').innerHTML = `<p><strong>${lastQuote.text}</strong><br><em>Category: ${lastQuote.category}</em></p>`;
-}
+GitHub repository: alx_fe_javascript
+Directory: dom-manipulation
